@@ -666,8 +666,27 @@ Default value
     - [SCM integration](https://docs.sonarqube.org/latest/analysis/scm-integration/) and the [analysis parameters]
     (https://docs.sonarqube.org/latest/analysis/analysis-parameters/).
 
+## How to test
+This project should be used to easily test a complex module organization and how to setup JaCoCo, Sonar Maven plugin etc, but, a certain point, you should bring what has been done into a real project, complex and full of files.
 
+Some tests have to be done then and this could take a lot of time and a bit of frustration. A way to proceed could be analyse just one module, may be a small one, and then another one and see if the all the tests have been taken into account and if the coverage makes sense.
 
+A way of doing this is to create a profile
+
+```xml
+<profile>
+    <id>sonar-profile</id>
+    <modules>
+        <module>moduleA</module>
+        <module>moduleB</module>
+        <module>moduleC</module>
+    </modules>
+</profile>
+```
+
+and run `mvn clean install -Pjacoco-profile -pl moduleA moduleB moduleC` to generate the surefire and JaCoCo reports, then `mvn sonar:sonar -Psonar` to run the scanner only on a subset of modules.
+
+Pay attention, `<sonar.skip>true</sonar.skip>` it seems not taken into account, and the other suggestion on the Sonar documentation `pl !moduleD` does not work, all the modules are index and scanned. Instead the proposed `profile` works correctly to make a quick test.
 
 ## ToDo
 
